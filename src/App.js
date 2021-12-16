@@ -1,18 +1,51 @@
 import { useState } from 'react';
 import FormData from 'form-data';
+import axios from 'axios';
+require('dotenv').config()
 
 function App() {
 
   const [file, setFile] = useState()
 
-  const handleFile=(fileToHandle)=>{
+  const handleFile=async (fileToHandle) =>{
 
     // initialize the form data
     const formData = new FormData()
 
-    // append the form data to 
+    // append the file form data to 
+    formData.append(
+      "file",
+      fileToHandle
+    )
 
-    
+    // call the keys from .env
+
+    const API_KEY = process.env.REACT_APP_API_KEY
+    const API_SECRET = process.env.REACT_APP_API_SECRET
+
+    // the endpoint needed to upload the file
+    const url =  `https://api.pinata.cloud/pinning/pinFileToIPFS`
+
+    const response = await axios.post(
+      url,
+      formData,
+      {
+          maxContentLength: "Infinity",
+          headers: {
+              "Content-Type": `multipart/form-data;boundary=${formData._boundary}`, 
+              'pinata_api_key': API_KEY,
+              'pinata_secret_api_key': API_SECRET
+
+          }
+      }
+  )
+
+  console.log(response)
+  return response
+
+  
+
+  
   }
 
   return (
