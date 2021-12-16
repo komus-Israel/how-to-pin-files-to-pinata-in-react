@@ -7,9 +7,9 @@ function App() {
 
   const [file, setFile] = useState()
   const [myipfsHash, setIPFSHASH] = useState('')
-  const ipfsBASEURL = "https://gateway.pinata.cloud/ipfs/"
+ 
 
-  const handleFile=(fileToHandle) =>{
+  const handleFile=async (fileToHandle) =>{
 
     
 
@@ -29,7 +29,7 @@ function App() {
     // the endpoint needed to upload the file
     const url =  `https://api.pinata.cloud/pinning/pinFileToIPFS`
 
-    axios.post(
+    const response = await axios.post(
       url,
       formData,
       {
@@ -41,17 +41,12 @@ function App() {
 
           }
       }
-  ).then(
-    data=>{
-      console.log(data)
-      setIPFSHASH(data.data.IpfsHash)
-    }
   )
 
-  //console.log(myipfsHash)
-    
+  console.log(response)
 
-  
+  // get the hash
+  setIPFSHASH(response.data.IpfsHash)
 
   
   }
@@ -65,16 +60,12 @@ function App() {
       
       
     {
-      myipfsHash.length > 0 && <img src={`https://gateway.pinata.cloud/ipfs/${myipfsHash}`} alt='not loading'/>
+
+      //  render the hash
+      myipfsHash.length > 0 && <img height='200' src={`https://gateway.pinata.cloud/ipfs/${myipfsHash}`} alt='not loading'/>
     }
     
-        
-        
-     
 
-      
-
-    
     </div>
   );
 }
