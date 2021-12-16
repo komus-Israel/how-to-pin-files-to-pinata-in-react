@@ -1,22 +1,25 @@
 import { useState } from 'react';
 import FormData from 'form-data';
 import axios from 'axios';
-require('dotenv').config()
+
 
 function App() {
 
   const [file, setFile] = useState()
+  const [myipfsHash, setIPFSHASH] = useState('')
+  const ipfsBASEURL = "https://gateway.pinata.cloud/ipfs/"
 
-  const handleFile=async (fileToHandle) =>{
+  const handleFile=(fileToHandle) =>{
+
+    
+
+    console.log('starting')
 
     // initialize the form data
     const formData = new FormData()
 
     // append the file form data to 
-    formData.append(
-      "file",
-      fileToHandle
-    )
+    formData.append("file", fileToHandle)
 
     // call the keys from .env
 
@@ -26,7 +29,7 @@ function App() {
     // the endpoint needed to upload the file
     const url =  `https://api.pinata.cloud/pinning/pinFileToIPFS`
 
-    const response = await axios.post(
+    axios.post(
       url,
       formData,
       {
@@ -38,20 +41,40 @@ function App() {
 
           }
       }
+  ).then(
+    data=>{
+      console.log(data)
+      setIPFSHASH(data.data.IpfsHash)
+    }
   )
 
-  console.log(response)
-  return response
+  //console.log(myipfsHash)
+    
 
   
 
   
   }
 
+  
+
   return (
     <div className="App">
       <input type="file" onChange={(event)=>setFile(event.target.files[0])}/>
       <button onClick={()=>handleFile(file)}>Pin</button>
+      
+      
+    {
+      myipfsHash.length > 0 && <img src={`https://gateway.pinata.cloud/ipfs/${myipfsHash}`} alt='not loading'/>
+    }
+    
+        
+        
+     
+
+      
+
+    
     </div>
   );
 }
